@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-docker-datadog
+- name: Show the datadog vars
+  debug: var=datadog
+  tags:
+  - datadog
+  - docker
+
+- name: Ensure datadog directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ datadog.agent_run_dir }}"
+  tags:
+  - datadog
+  - docker
+
+- name: Deploy datadog container
+  docker_container:
+    name: datadog
+    image: datadog/agent:latest
+    restart_policy: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+      - /proc/mounts:/host/proc/mounts:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    env:
+      DD_API_KEY: "{{ datadog.DD_API_KEY }}"
+      DD_LOGS_ENABLED: "{{ datadog.DD_LOGS_ENABLED }}"
+      DD_AC_EXCLUDE: "{{ datadog.DD_AC_EXCLUDE }}"
+      DD_AC_INCLUDE: "{{ datadog.DD_AC_INCLUDE }}"
+  tags:
+  - datadog
+  - docker

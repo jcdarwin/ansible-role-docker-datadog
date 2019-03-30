@@ -1,0 +1,9 @@
+---
+# defaults file for mebooks.ansible-role-docker-ghost
+
+datadog:
+  agent_run_dir: /opt/datadog-agent/run
+  DD_API_KEY: WHATEVER
+  DD_LOGS_ENABLED: true
+  DD_AC_EXCLUDE: "name:datadog"
+  DD_AC_INCLUDE: "name:traefik name:gollum name:ghost name:tomcat"
